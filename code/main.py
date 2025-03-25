@@ -4,25 +4,37 @@ from frame1 import Frame1
 from frame2 import Frame2
 from frame3 import Frame3
 
-root = tk.Tk()     # создаем корневой объект - окно
-root.title("bimprex")     # устанавливаем заголовок окна
-root.geometry("640x480")    # устанавливаем размеры окна
-#root.iconbitmap(default="favicon.ico") # иконка
-notebook = ttk.Notebook()
-notebook.pack(expand=True, fill="both")
 
-frame1 = Frame1(notebook)
-frame2 = Frame2(notebook)
-frame3 = Frame3(notebook)
+class Root(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("bimprex")  # устанавливаем заголовок окна
+        self.geometry("640x480")  # устанавливаем размеры окна
+        # self.iconbitmap(default="favicon.ico") # иконка
+        self.root_folder = tk.StringVar(value="")
+        self.root_folder_out = tk.StringVar(value="")
+        notebook = ttk.Notebook()
+        notebook.pack(expand=True, fill="both")
 
-frame1.pack(expand=True, fill="both")
-frame2.pack(expand=True, fill="both")
-frame3.pack(expand=True, fill="both")
+        frame1 = Frame1(notebook, self.root_folder, self.root_folder_out)
+        frame2 = Frame2(notebook, self.root_folder)
+        frame3 = Frame3(notebook)
 
-notebook.add(frame1, text="входные данные")
-notebook.add(frame2, text="действия")
-notebook.add(frame3, text="инфо")
+        frame1.pack(expand=True, fill="both")
+        frame2.pack(expand=True, fill="both")
+        frame3.pack(expand=True, fill="both")
+        
+        self.bind("<<NotebookTabChanged>>", frame2.prev_redraw)
 
+        notebook.add(frame1, text="входные данные")
+        notebook.add(frame2, text="действия")
+        notebook.add(frame3, text="инфо")
+        
+    def asd(self, *args):
+        print("fsdaf")
+
+
+root = Root()
 
 
 root.mainloop()
