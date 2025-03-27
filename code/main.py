@@ -10,6 +10,7 @@ class Root(tk.Tk):
         super().__init__()
         self.title("bimprex")  # устанавливаем заголовок окна
         self.geometry("640x480")  # устанавливаем размеры окна
+        self.minsize(640, 480)
         # self.iconbitmap(default="favicon.ico") # иконка
         self.root_folder = tk.StringVar(value="")
         self.root_folder_out = tk.StringVar(value="")

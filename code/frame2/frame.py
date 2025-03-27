@@ -1,7 +1,7 @@
-from tkinter import ttk, PhotoImage
+from tkinter import ttk
 import pathlib as pl
 from PIL import ImageTk, Image
-
+from PIL.ImageOps import scale
 
 class Frame2(ttk.Frame):
     def __init__(self, master, root_folder):
@@ -16,6 +16,8 @@ class Frame2(ttk.Frame):
         frm2.pack_propagate(False)
         frm1.pack(side="left", fill="both", expand=True)
         frm2.pack(side="left", fill="both", expand=True)
+        # frm1.grid(column=0, row=0, sticky="nsew")
+        # frm2.grid(column=1, row=0, sticky="nsew")
 
         self.frm3 = ttk.Frame(frm2, borderwidth=2, relief="solid")
         self.frm3.pack(anchor="n", expand=True, fill="both")
@@ -32,6 +34,8 @@ class Frame2(ttk.Frame):
         button_change.pack(anchor="sw", side="left")
         
         self.bind("<<NotebookTabChanged>>", self.prev_redraw)
+        self.bind("<Configure>", self.prev_redraw)
+        
 
     def __on_root_folder_change(self, *args):
         for i in pl.Path(self.root_folder.get()).glob("*.*"):
@@ -44,5 +48,7 @@ class Frame2(ttk.Frame):
         frame_width = self.frm3.winfo_width()
         frame_height = self.frm3.winfo_height()
         self.preveiw_image.size
-        print(self.preveiw_image.size)
+        factor = min(frame_width / self.preveiw_image.size[0], frame_height / self.preveiw_image.size[1])
+        self.image = ImageTk.PhotoImage(scale(self.preveiw_image, factor))
+        self.image_prev.config(image=self.image)
         print("fac")
