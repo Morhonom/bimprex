@@ -7,23 +7,32 @@ from PIL.ImageOps import scale
 from .defaultAction import Rescale
 
 class ActionFrame(ttk.Frame):
-    def __init__(self, master, index):
+    def __init__(self, master, class_var, delete_action, move_up, move_down):
         super().__init__(master, borderwidth=1, relief="solid")
         self.master = master
-        self.index = index
+        self.delete_action = delete_action
+        self.move_up = move_up
+        self.move_down = move_down
         # for i in fields_number:
-        button_up = ttk.Button(self, text="up")
-        button_down = ttk.Button(self, text="down")
-        button_delete = ttk.Button(self, text="delete", command=self.delete)
+        button_up = ttk.Button(self, text="up", command=self.move_up_inside)
+        button_down = ttk.Button(self, text="down", command=self.move_down_inside)
+        button_delete = ttk.Button(self, text="delete", command=self.delete_action_inside)
         button_up.pack(anchor="nw", side="left")
         button_down.pack(anchor="nw", side="left")
         button_delete.pack(anchor="nw", side="left")
+        
+        test_text = ttk.Label(self, text="ЭуйЭ")
+        test_text.pack()
+        
+    def delete_action_inside(self):
+        self.delete_action(self)
+        
+    def move_up_inside(self):
+        self.move_up(self)
+        
+    def move_down_inside(self):
+        self.move_down(self)
     
-    def delete(self):
-        # self.master.packed_actions.pop(self.index)
-        print(self.index, "||" , self, "||", self.master)
-        print(self.master.preview_number)
-        # self.master.update_actions(self.master)
         
 
 class Frame2(ttk.Frame):
@@ -36,7 +45,6 @@ class Frame2(ttk.Frame):
 
     def preset(self):
         
-
         self.frm1 = ttk.Frame(self, borderwidth=2, relief="solid")
         frm2 = ttk.Frame(self, borderwidth=2, relief="solid")
         self.frm1.pack_propagate(False)
@@ -123,18 +131,40 @@ class Frame2(ttk.Frame):
 
     def add_action(self, b):
         print("fack", b)
-        index = len(self.packed_actions)
-        self.packed_actions.append([Rescale()])
-        self.packed_actions[-1].append(ActionFrame(self.frm6, index))
-        for i in self.packed_actions:
-            i[1].pack()
-            # print(self.packed_actions)
-        self.dropdown["text"]="penis"
-        
+        self.packed_actions.append(ActionFrame(self.frm6, Rescale, delete_action=self.delete_action, move_up=self.move_action_up, move_down=self.move_action_down))
+        self.packed_actions[-1].pack()
     
-    def update_actions(self, master):
-        for i in master.packed_actions:
-            i[1].pack()
-            print(master.packed_actions)
+    def update_actions(self):
+        for i in self.packed_actions:
+            i.forget()
+            # print(self.packed_actions)
+        for i in self.packed_actions:
+            i.pack()
+            # print(self.packed_actions)
+            
+    def delete_action(self, action:ActionFrame):
+        print("delete action working")
+        action.destroy()
+        self.packed_actions.remove(action)
+        # for i in self.packed_actions:
+        #     if i.need_delete:
+        #         print("debug true")
+        #         i.destroy()
+        #         self.packed_actions.remove(i)
+        #         break
         
-        
+    def move_action_up(self, action:ActionFrame):
+        print("moving up")
+        if self.packed_actions.index(action) - 1 >= 0:
+            print("true shit")
+            a, b = self.packed_actions.index(action), self.packed_actions.index(action) - 1
+            self.packed_actions[b], self.packed_actions[a] = self.packed_actions[a], self.packed_actions[b]
+            self.update_actions()
+            
+    def move_action_down(self, action:ActionFrame):
+        print("moving down")
+        if self.packed_actions.index(action) + 1 < len(self.packed_actions):
+            print("true shit")
+            a, b = self.packed_actions.index(action), self.packed_actions.index(action) + 1
+            self.packed_actions[b], self.packed_actions[a] = self.packed_actions[a], self.packed_actions[b]
+            self.update_actions()

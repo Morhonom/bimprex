@@ -27,7 +27,7 @@ class Root(tk.Tk):
         
         self.bind("<<NotebookTabChanged>>", frame2.prev_redraw)
 
-        notebook.add(frame1, text="входные данные")
+        notebook.add(frame1, text="входные данные") 
         notebook.add(frame2, text="действия")
         notebook.add(frame3, text="инфо")
         
