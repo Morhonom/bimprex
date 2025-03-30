@@ -22,9 +22,9 @@ class ActionFrame(ttk.Frame):
         button_delete = ttk.Button(
             self, text="delete", command=self.delete_action_inside
         )
-        button_up.pack(anchor="nw", side="left")
-        button_down.pack(anchor="nw", side="left")
-        button_delete.pack(anchor="nw", side="left")
+        button_up.pack(side="left")
+        button_down.pack()
+        button_delete.pack()
 
         for i in self.class_var.fields:
             print("adding fields")
@@ -51,9 +51,10 @@ class ActionFrame(ttk.Frame):
 
 
 class Frame2(ttk.Frame):
-    def __init__(self, master, root_folder):
+    def __init__(self, master, root_folder, root_folder_out):
         super().__init__(master)
         self.root_folder = root_folder
+        self.root_folder_out = root_folder_out
         self.preview_number = 0
         self.packed_actions = []
         self.preset()
@@ -79,9 +80,11 @@ class Frame2(ttk.Frame):
         )
         button_next = ttk.Button(self.frm4, text="right", command=self.next_preview)
         button_change = ttk.Button(self.frm4, text="change", command=self.apply_actions_preview)
+        button_save = ttk.Button(self.frm4, text="save", command=self.save)
         button_previus.pack(anchor="sw", side="left")
         button_next.pack(anchor="sw", side="left")
         button_change.pack(anchor="sw", side="left")
+        button_save.pack(anchor="sw", side="left")
 
         self.frm3 = ttk.Frame(frm2, borderwidth=2, relief="solid")
         self.frm3.pack(anchor="n", expand=True, fill="both")
@@ -127,6 +130,7 @@ class Frame2(ttk.Frame):
         for i in pl.Path(self.root_folder.get()).glob("*.*"):
             self.paths.append(i)
             # print(i)
+        print("PATH HERE")
         self.preview_image_default = Image.open(self.paths[0])
         self.image_prev.config(image=self.preview_image)
 
@@ -224,3 +228,10 @@ class Frame2(ttk.Frame):
         self.preview_image_default = image
         self.prev_redraw()
         
+    def save(self):
+        for i in self.paths:
+            image = Image.open(i)
+            for j in self.packed_actions:
+                image = j.action.forward(image, *j.update_fields_output())
+            image.save(self.root_folder_out.get() + "/" + i.stem + i.suffix)
+            print(self.root_folder_out.get() + "/" + i.stem + i.suffix)

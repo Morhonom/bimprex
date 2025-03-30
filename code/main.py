@@ -18,7 +18,7 @@ class Root(tk.Tk):
         notebook.pack(expand=True, fill="both")
 
         frame1 = Frame1(notebook, self.root_folder, self.root_folder_out)
-        frame2 = Frame2(notebook, self.root_folder)
+        frame2 = Frame2(notebook, self.root_folder, self.root_folder_out)
         frame3 = Frame3(notebook)
 
         frame1.pack(expand=True, fill="both")
