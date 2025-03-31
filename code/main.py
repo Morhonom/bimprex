@@ -11,7 +11,7 @@ class Root(tk.Tk):
         self.title("bimprex")
         self.geometry("640x480")
         self.minsize(640, 480)
-        # self.iconbitmap(default="favicon.ico") # иконка
+        # self.icon(default=".ico")
         self.root_folder = tk.StringVar(value="")
         self.root_folder_out = tk.StringVar(value="")
         notebook = ttk.Notebook()
