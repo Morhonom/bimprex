@@ -22,15 +22,14 @@ class ActionFrame(ttk.Frame):
         button_delete = ttk.Button(
             self, text="delete", command=self.delete_action_inside
         )
-        button_up.pack(side="left")
-        button_down.pack()
-        button_delete.pack()
+        button_up.pack(side="left", anchor="nw")
+        button_down.pack(side="left", anchor="nw")
+        button_delete.pack(side="left", anchor="nw")
 
         for i in self.class_var.fields:
-            print("adding fields")
             self.fields.append(ttk.Entry(self))
             self.fields_output.append(self.class_var.fields[i]["default_value"])
-            self.fields[-1].pack()
+            self.fields[-1].pack(side="bottom", anchor="nw")
 
         self.action = class_var()
         
@@ -53,6 +52,7 @@ class ActionFrame(ttk.Frame):
 class Frame2(ttk.Frame):
     def __init__(self, master, root_folder, root_folder_out):
         super().__init__(master)
+        self.apply_actions_preview_state = True
         self.root_folder = root_folder
         self.root_folder_out = root_folder_out
         self.preview_number = 0
@@ -129,8 +129,6 @@ class Frame2(ttk.Frame):
 
         for i in pl.Path(self.root_folder.get()).glob("*.*"):
             self.paths.append(i)
-            # print(i)
-        print("PATH HERE")
         self.preview_image_default = Image.open(self.paths[0])
         self.image_prev.config(image=self.preview_image)
 
@@ -145,8 +143,7 @@ class Frame2(ttk.Frame):
         self.preview_image = scale(self.preview_image_default, factor)
         self.image = ImageTk.PhotoImage(self.preview_image)
         self.image_prev.config(image=self.image)
-        print("fac")
-
+        
     def next_preview(self):
         if self.preview_number + 1 < len(self.paths):
             self.preview_number += 1
@@ -160,8 +157,6 @@ class Frame2(ttk.Frame):
             self.prev_redraw()
 
     def add_action(self, action):
-        print("fack", action.name)
-        print(self.packed_actions)
         self.packed_actions.append(
             ActionFrame(
                 self.frm6,
@@ -176,26 +171,15 @@ class Frame2(ttk.Frame):
     def update_actions(self):
         for i in self.packed_actions:
             i.forget()
-            # print(self.packed_actions)
         for i in self.packed_actions:
             i.pack()
-            # print(self.packed_actions)
 
     def delete_action(self, action: ActionFrame):
-        print("delete action working")
         action.destroy()
         self.packed_actions.remove(action)
-        # for i in self.packed_actions:
-        #     if i.need_delete:
-        #         print("debug true")
-        #         i.destroy()
-        #         self.packed_actions.remove(i)
-        #         break
 
     def move_action_up(self, action: ActionFrame):
-        print("moving up")
         if self.packed_actions.index(action) - 1 >= 0:
-            print("true shit")
             a, b = (
                 self.packed_actions.index(action),
                 self.packed_actions.index(action) - 1,
@@ -207,9 +191,7 @@ class Frame2(ttk.Frame):
             self.update_actions()
 
     def move_action_down(self, action: ActionFrame):
-        print("moving down")
         if self.packed_actions.index(action) + 1 < len(self.packed_actions):
-            print("true shit")
             a, b = (
                 self.packed_actions.index(action),
                 self.packed_actions.index(action) + 1,
@@ -221,12 +203,17 @@ class Frame2(ttk.Frame):
             self.update_actions()
 
     def apply_actions_preview(self):
-        image = self.preview_image
-        for i in self.packed_actions:
-            image = i.action.forward(image, *i.update_fields_output())
-        print(image.size)
-        self.preview_image_default = image
-        self.prev_redraw()
+        if self.apply_actions_preview_state:
+            image = self.preview_image
+            for i in self.packed_actions:
+                image = i.action.forward(image, *i.update_fields_output())
+            self.preview_image_default = image
+            self.prev_redraw()
+            self.apply_actions_preview_state = False
+        else:
+            self.preview_image_default = Image.open(self.paths[self.preview_number])
+            self.prev_redraw()
+            self.apply_actions_preview_state = True
         
     def save(self):
         for i in self.paths:
