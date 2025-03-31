@@ -3,8 +3,7 @@ import tkinter as tk
 import pathlib as pl
 from PIL import ImageTk, Image
 from PIL.ImageOps import scale
-
-from .defaultAction import Rescale
+from import_modules import get_modules
 
 
 class ActionFrame(ttk.Frame):
@@ -110,13 +109,14 @@ class Frame2(ttk.Frame):
         self.frm6 = ttk.Frame(self.frm1, borderwidth=1, relief="solid")
         self.frm6.pack(expand=True, fill="both")
 
-        test_list = [Rescale]
+        test_list = get_modules("./code/actions/")
+        print(test_list)
 
         dropdown = tk.Menubutton(frm5, text="add action", relief="raised")
         dropdown.menu = tk.Menu(dropdown, tearoff=0)
         dropdown["menu"] = dropdown.menu
         for i in test_list:
-            dropdown.menu.add_command(label=i.name, command=lambda: self.add_action(i))
+            dropdown.menu.add_command(label=i.__name__, command=lambda: self.add_action(i))
         dropdown.pack()
 
         self.bind("<<NotebookTabChanged>>", self.prev_redraw)
