@@ -32,7 +32,6 @@ class ActionFrame(ttk.Frame):
             self.fields[-1].pack(side="bottom", anchor="nw")
 
         self.action = class_var()
-        
 
     def delete_action_inside(self):
         self.delete_action(self)
@@ -42,7 +41,7 @@ class ActionFrame(ttk.Frame):
 
     def move_down_inside(self):
         self.move_down(self)
-        
+
     def update_fields_output(self):
         for i in range(len(self.fields)):
             self.fields_output[i] = self.fields[i].get()
@@ -66,20 +65,19 @@ class Frame2(ttk.Frame):
         frm2.pack_propagate(False)
         self.frm1.pack(side="left", fill="both", expand=True)
         frm2.pack(side="left", fill="both", expand=True)
-        # frm1.grid(column=0, row=0, sticky="nsew")
-        # frm2.grid(column=1, row=0, sticky="nsew")
 
         self.frm4 = ttk.Frame(
             frm2, borderwidth=2, relief="solid", width=100, height=100
         )
-        # self.frm4.pack_propagate(False)
         self.frm4.pack(anchor="s", side="bottom", fill="y")
 
         button_previus = ttk.Button(
             self.frm4, text="left", command=self.previos_preview
         )
         button_next = ttk.Button(self.frm4, text="right", command=self.next_preview)
-        button_change = ttk.Button(self.frm4, text="change", command=self.apply_actions_preview)
+        button_change = ttk.Button(
+            self.frm4, text="change", command=self.apply_actions_preview
+        )
         button_save = ttk.Button(self.frm4, text="save", command=self.save)
         button_previus.pack(anchor="sw", side="left")
         button_next.pack(anchor="sw", side="left")
@@ -95,31 +93,18 @@ class Frame2(ttk.Frame):
 
         frm5 = ttk.Frame(self.frm1, borderwidth=2, relief="solid")
         frm5.pack(side="top")
-        
+
         self.frm6 = ttk.Frame(self.frm1, borderwidth=1, relief="solid")
         self.frm6.pack(expand=True, fill="both")
 
         test_list = [Rescale]
-        
+
         dropdown = tk.Menubutton(frm5, text="add action", relief="raised")
         dropdown.menu = tk.Menu(dropdown, tearoff=0)
         dropdown["menu"] = dropdown.menu
         for i in test_list:
             dropdown.menu.add_command(label=i.name, command=lambda: self.add_action(i))
         dropdown.pack()
-        
-        
-        
-        # self.added_action = tk.StringVar()
-        # self.dropdown = ttk.OptionMenu(
-        #     frm5,
-        #     self.added_action,
-        #     test_list[0],
-        #     *test_list[1:],
-        #     command=self.add_action,
-        # )
-        # self.dropdown.pack()
-
 
         self.bind("<<NotebookTabChanged>>", self.prev_redraw)
         self.bind("<Configure>", self.prev_redraw)
@@ -143,7 +128,7 @@ class Frame2(ttk.Frame):
         self.preview_image = scale(self.preview_image_default, factor)
         self.image = ImageTk.PhotoImage(self.preview_image)
         self.image_prev.config(image=self.image)
-        
+
     def next_preview(self):
         if self.preview_number + 1 < len(self.paths):
             self.preview_number += 1
@@ -214,7 +199,7 @@ class Frame2(ttk.Frame):
             self.preview_image_default = Image.open(self.paths[self.preview_number])
             self.prev_redraw()
             self.apply_actions_preview_state = True
-        
+
     def save(self):
         for i in self.paths:
             image = Image.open(i)
