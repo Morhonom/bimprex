@@ -13,23 +13,36 @@ class ActionFrame(ttk.Frame):
         self.class_var = class_var
         self.fields = []
         self.fields_output = []
+        self.fields_hint = []
         self.master = master
         self.delete_action = delete_action
         self.move_up = move_up
         self.move_down = move_down
-        button_up = ttk.Button(self, text="up", command=self.move_up_inside)
-        button_down = ttk.Button(self, text="down", command=self.move_down_inside)
+
+        button_frame = ttk.Frame(self)
+        button_frame.pack()
+        button_up = ttk.Button(button_frame, text="up", command=self.move_up_inside)
+        button_down = ttk.Button(
+            button_frame, text="down", command=self.move_down_inside
+        )
         button_delete = ttk.Button(
-            self, text="delete", command=self.delete_action_inside
+            button_frame, text="delete", command=self.delete_action_inside
         )
         button_up.pack(side="left", anchor="nw")
         button_down.pack(side="left", anchor="nw")
         button_delete.pack(side="left", anchor="nw")
 
+        fields_frame = ttk.Frame(self)
+        fields_frame.pack(expand=True, fill="x")
+
         for i in self.class_var.fields:
-            self.fields.append(ttk.Entry(self))
+            self.fields_hint.append(
+                ttk.Label(fields_frame, text=self.class_var.fields[i]["hint"])
+            )
+            self.fields.append(ttk.Entry(fields_frame))
             self.fields_output.append(self.class_var.fields[i]["default_value"])
-            self.fields[-1].pack(side="bottom", anchor="nw")
+            self.fields_hint[-1].pack(side="left", anchor="nw")
+            self.fields[-1].pack(side="left", anchor="nw", expand=True, fill="x")
 
         self.action = class_var()
 
@@ -107,6 +120,10 @@ class Frame2(ttk.Frame):
         dropdown.pack()
 
         self.bind("<<NotebookTabChanged>>", self.prev_redraw)
+
+        self.root_folder.trace("w", self.bind_c)
+
+    def bind_c(self, *args):
         self.bind("<Configure>", self.prev_redraw)
 
     def __on_root_folder_change(self, *args):
@@ -115,7 +132,6 @@ class Frame2(ttk.Frame):
         for i in pl.Path(self.root_folder.get()).glob("*.*"):
             self.paths.append(i)
         self.preview_image_default = Image.open(self.paths[0])
-        self.image_prev.config(image=self.preview_image)
 
     def prev_redraw(self, *args):
         frame_width = self.frm3.winfo_width()
@@ -151,13 +167,13 @@ class Frame2(ttk.Frame):
                 move_down=self.move_action_down,
             )
         )
-        self.packed_actions[-1].pack()
+        self.packed_actions[-1].pack(fill="x")
 
     def update_actions(self):
         for i in self.packed_actions:
             i.forget()
         for i in self.packed_actions:
-            i.pack()
+            i.pack(fill="x")
 
     def delete_action(self, action: ActionFrame):
         action.destroy()

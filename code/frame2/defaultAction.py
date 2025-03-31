@@ -2,7 +2,7 @@ from PIL import Image
 from PIL.ImageOps import scale
 
 class Rescale:
-    fields:list = {"scale":{"default_value":"1", "value":"0", "hint":"rescale value"}}
+    fields:list = {"scale":{"default_value":"1", "value":"0", "hint":"rescale value:"}}
     name:str = "Rescale"
     def __init__(self):
         ...

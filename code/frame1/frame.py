@@ -1,9 +1,8 @@
-from tkinter import ttk, filedialog, PhotoImage
+from tkinter import ttk, filedialog
 from PIL import ImageTk, Image
 from PIL.ImageOps import scale
 
 import tkinter as tk
-from typing import Callable
 import pathlib as pl
 
 
@@ -36,20 +35,23 @@ class Gallery(ttk.Frame):
         self.img_size = (200, 200)
         self.root_folder = root_folder
         self.root_folder.trace("w", self.gal_upd)
+        self.root_folder.trace("w", self.bind_c)
+
+    def bind_c(self, *args):
         self.bind("<Configure>", self.redraw)
-        
+
     def redraw(self, *args):
         columns = self.winfo_width() // self.img_size[0]
         for index, img in enumerate(self.images):
             img.grid(row=index // columns, column=index % columns)
-        
+
     def gal_upd(self, *args):
         self.images: list[GalleryImg] = []
         folder_path = pl.Path(self.root_folder.get())
 
         for img_path in folder_path.glob("*.*"):
             self.images.append(GalleryImg(self, img_path))
-        
+
         self.redraw()
 
 
