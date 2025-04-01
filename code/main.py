@@ -36,9 +36,6 @@ class Root(tk.Tk):
     def bind_c(self, *args):
         self.bind("<<NotebookTabChanged>>", self.frame2.prev_redraw)
 
-    def asd(self, *args):
-        print("fsdaf")
-
 
 root = Root()
 

@@ -77,6 +77,6 @@ class Frame1(ttk.Frame):
         self.galr = Gallery(self, self.root_folder)
         self.input_folder = FolderSelector(self, "открыть папку", self.root_folder)
         self.input_folder.pack(anchor="nw")
-        self.output_folder = FolderSelector(self, "папка выхода", self.root_folder_out)
+        self.output_folder = FolderSelector(self, "папка сохранения", self.root_folder_out)
         self.output_folder.pack(anchor="nw")
         self.galr.pack(fill="both", side="bottom", expand=True)

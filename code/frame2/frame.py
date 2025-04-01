@@ -17,15 +17,18 @@ class ActionFrame(ttk.Frame):
         self.delete_action = delete_action
         self.move_up = move_up
         self.move_down = move_down
+        
+        name = ttk.Label(self, text=self.class_var.__name__)
+        name.pack()
 
         button_frame = ttk.Frame(self)
         button_frame.pack()
-        button_up = ttk.Button(button_frame, text="up", command=self.move_up_inside)
+        button_up = ttk.Button(button_frame, text="выше", command=self.move_up_inside)
         button_down = ttk.Button(
-            button_frame, text="down", command=self.move_down_inside
+            button_frame, text="ниже", command=self.move_down_inside
         )
         button_delete = ttk.Button(
-            button_frame, text="delete", command=self.delete_action_inside
+            button_frame, text="удалить", command=self.delete_action_inside
         )
         button_up.pack(side="left", anchor="nw")
         button_down.pack(side="left", anchor="nw")
@@ -84,13 +87,13 @@ class Frame2(ttk.Frame):
         self.frm4.pack(anchor="s", side="bottom", fill="y")
 
         button_previus = ttk.Button(
-            self.frm4, text="left", command=self.previos_preview
+            self.frm4, text="Предыдущая", command=self.previos_preview
         )
-        button_next = ttk.Button(self.frm4, text="right", command=self.next_preview)
+        button_next = ttk.Button(self.frm4, text="Следующая", command=self.next_preview)
         button_change = ttk.Button(
-            self.frm4, text="change", command=self.apply_actions_preview
+            self.frm4, text="Изменить", command=self.apply_actions_preview
         )
-        button_save = ttk.Button(self.frm4, text="save", command=self.save)
+        button_save = ttk.Button(self.frm4, text="Сохранить", command=self.save)
         button_previus.pack(anchor="sw", side="left")
         button_next.pack(anchor="sw", side="left")
         button_change.pack(anchor="sw", side="left")
@@ -110,13 +113,15 @@ class Frame2(ttk.Frame):
         self.frm6.pack(expand=True, fill="both")
 
         test_list = get_modules("./code/actions/")
-        print(test_list)
+        #print(test_list)
 
-        dropdown = tk.Menubutton(frm5, text="add action", relief="raised")
+        dropdown = tk.Menubutton(frm5, text="добавить действие", relief="raised")
         dropdown.menu = tk.Menu(dropdown, tearoff=0)
         dropdown["menu"] = dropdown.menu
         for i in test_list:
-            dropdown.menu.add_command(label=i.__name__, command=lambda: self.add_action(i))
+            dropdown.menu.add_command(
+                label=i.__name__, command=lambda i=i: self.add_action(i)
+            )
         dropdown.pack()
 
         self.bind("<<NotebookTabChanged>>", self.prev_redraw)
